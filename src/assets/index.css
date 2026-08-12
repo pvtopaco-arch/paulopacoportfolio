@@ -1,0 +1,477 @@
+body {
+    font-family: 'Montserrat', sans-serif;
+    color: #2d3748;
+    background-color: #ffffff;
+    overflow-x: hidden;
+}
+
+/* ==========================================================================
+   SCROLL-REVEAL (used by the v-reveal directive)
+   ========================================================================== */
+.reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .reveal {
+        transition: none;
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* Enable smooth scrolling across internal page anchors */
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 75px; /* Matches navbar height to prevent headline clipping */
+}
+
+
+/* HEADINGS & DECORATIVE TYPOGRAPHY */
+.project-heading,
+.project-card-title,
+.tools-main-title,
+.tools-category-title,
+.contact-main-title {
+    color: #0F6E56;
+}
+
+.project-heading {
+    margin-top: 40px;
+    position: relative;
+    padding-bottom: 1rem;
+    color: #0B3B32;
+}
+
+.project-heading::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background-color: #1D9E75;
+    border-radius: 2px;
+}
+
+.section-title {
+    color: #0B3B32 !important;
+}
+
+
+/* NAVBAR & NAVIGATION */
+/* Normal Links & Brand text */
+.navbar-light .navbar-brand,
+.navbar-light .navbar-nav .nav-link {
+    color: #1D9E75 !important;
+    opacity: 0.85; /* Makes standard links slightly softer */
+    transition: opacity 0.2s ease;
+}
+
+/* Hover & Active Links */
+.navbar-light .navbar-nav .nav-link:hover,
+.navbar-light .navbar-nav .nav-link:focus,
+.navbar-light .navbar-nav .nav-link.active {
+    color: #0F6E56 !important;
+    opacity: 1;
+    font-weight: 600;
+}
+
+/*  Custom Hamburger Icon Color */
+.navbar-light .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%230B3B32' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+}
+
+.navbar-light .navbar-toggler {
+    border-color: rgba(44, 62, 80, 0.25) !important;
+}
+
+.navbar-nav .nav-link {
+    font-size: 18px;
+    font-weight: 500;
+    position: relative;
+}
+
+.navbar-nav .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    width: 0;
+    height: 2px;
+    background-color: #0F6E56;
+    transition: width 0.25s ease;
+}
+
+.navbar-nav .nav-link:hover::after,
+.navbar-nav .nav-link.active::after {
+    width: 100%;
+}
+
+.navbar {
+    transition: box-shadow 0.3s ease;
+}
+
+.navbar-scrolled {
+    box-shadow: 0 4px 16px rgba(11, 59, 50, 0.1);
+}
+
+.navbar-brand img {
+    width: auto;
+    object-fit: contain;
+}
+
+#logo img {
+    max-height: 60px;
+}
+
+#navbar-nav {
+    color: #0B3B32;
+}
+
+
+/* LANDING INFO DESIGN TEXT & PHOTO */
+/* Target the image using its unique ID */
+#landingphoto {
+    width: 250px;
+    height: 250px;
+    object-fit: cover; /* Prevents the image from stretching or distorting */
+}
+
+/* Optional: If you want it to be responsive (smaller on mobile, larger on desktop) */
+@media (min-width: 768px) {
+    #landingphoto {
+        width: 350px;
+        height: 350px;
+    }
+}
+
+/* 1. The Gradient Accent for your Name */
+.text-gradient {
+    background: linear-gradient(135deg, #0B3B32 30%, #0F6E56 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    /* Extra bold weight ensures the subtle color shift is actually visible */
+    font-weight: 800;
+}
+
+.lead {
+    text-align: justify;
+}
+
+/* 2.  Developer Badge */
+.tech-badge {
+    font-family: 'Courier New', Courier, monospace; /* Monospace for dev flavor */
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #0B3B32;
+    background-color: rgb(127, 140, 141);
+    padding: 6px 14px;
+    border-radius: 50px;
+}
+
+/* 3. Modern Call-to-Action Button Button Override */
+.custom-btn {
+    border-radius: 8px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid transparent;
+}
+
+.custom-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(15, 110, 86, 0.25) !important;
+    background: linear-gradient(135deg, #0F6E56 0%, #1D9E75 100%);
+}
+
+.custom-btn:active {
+    transform: translateY(0) scale(0.97);
+}
+
+/* Tie Bootstrap's default dark/outline buttons to the teal palette
+   instead of leaving them at Bootstrap's default near-black */
+.btn-dark.custom-btn {
+    background-color: #0B3B32 !important;
+    border-color: #0B3B32 !important;
+}
+
+.btn-outline-dark.custom-btn {
+    color: #0B3B32 !important;
+    border-color: #0B3B32 !important;
+}
+
+.btn-outline-dark.custom-btn:hover {
+    color: #fff !important;
+}
+
+/* Hero heading: let "Hi, I'm" pick up the dark teal instead of
+   Bootstrap's default text-dark black */
+#landing h1.text-dark {
+    color: #0B3B32 !important;
+}
+
+
+/* === 4. PROJECTS SECTION ================== */
+.card {
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+    background-color: #ffffff;
+}
+
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 28px rgba(11, 59, 50, 0.1) !important;
+}
+
+/* The container holding the image */
+.image-wrapper {
+    height: 220px; /* Gives a fixed, uniform height to all project cards */
+    padding: 0 !important; /* Removes Bootstrap's internal padding so the image can expand fully */
+    overflow: hidden; /* Crucial: This chops off the unwanted outer parts of the image */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f1f3f5;
+}
+
+/* The actual illustration */
+.project-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Forces the image to fill the container entirely, cropping the excess edges */
+    object-position: center; /* Keeps the central laptop illustration perfectly centered */
+    transform: scale(1.15); /* Zooms in just enough to push the inner gray rectangle completely out of view */
+    max-height: 140px;
+    width: auto;
+    transition: transform 0.3s ease;
+}
+
+.card:hover .project-img {
+    transform: scale(1.05);
+}
+
+.project-card-title {
+    color: #0B3B32;
+    font-size: 1.15rem;
+}
+
+
+/* ==========================================================================
+   5. TOOLS SECTION
+   ========================================================================== */
+.tools-main-title {
+    color: #0B3B32;
+}
+
+.tools-category-title {
+    color: #4a5568;
+    font-size: 1.25rem;
+    border-bottom: 2px solid #edf2f7;
+    padding-bottom: 0.75rem;
+}
+
+.tool-logo {
+    max-height: 65px;
+    width: auto;
+    filter: grayscale(20%);
+    transition: filter 0.3s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    cursor: pointer;
+}
+
+.tool-logo:hover {
+    filter: grayscale(0%);
+    transform: scale(1.12) translateY(-3px);
+}
+
+
+/* ==========================================================================
+   6. CONTACT FORM & FOOTER
+   ========================================================================== */
+textarea.custom-input {
+    resize: none;
+    min-height: 180px;
+}
+
+.custom-submit-btn {
+    background-color: #0F6E56 !important;
+    border: none !important;
+    border-radius: 10px !important;
+    font-weight: 500;
+    padding: 10px 32px !important;
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.2);
+    transition: all 0.2s ease;
+}
+
+.contact-form {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    max-width: 600px;
+    margin: 2rem 0;
+    border: 1px solid #e2e8f0;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+.submit-btn {
+    background-color: #38bdf8;
+    color: #0f172a;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.submit-btn:hover {
+    background-color: #0ea5e9;
+}
+
+.custom-footer {
+    background-color: #0B3B32 !important;
+    letter-spacing: 0.5px;
+}
+
+.footer-name {
+    font-size: 1.05rem;
+    letter-spacing: 0.8px;
+}
+
+/* --- Footer --- */
+footer {
+    text-align: center;
+    padding: 2rem;
+    background-color: #1e293b;
+    color: #94a3b8;
+}
+
+.social-icons a.text-dark-blue {
+    color: #0B3B32 !important;
+    transition: color 0.2s ease, transform 0.2s ease;
+    display: inline-block;
+}
+
+.social-icons a.text-dark-blue:hover {
+    color: #0F6E56 !important;
+    transform: translateY(-2px);
+}
+
+/* AVATAR LANDING PAGE PHOTO */
+
+.profile-card {
+  cursor: pointer;
+  position: relative;
+  animation: float 4.5s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero-copy > * {
+  opacity: 0;
+  animation: fadeInUp 0.7s ease forwards;
+}
+
+.hero-copy > *:nth-child(1) { animation-delay: 0.05s; }
+.hero-copy > *:nth-child(2) { animation-delay: 0.15s; }
+.hero-copy > *:nth-child(3) { animation-delay: 0.25s; }
+.hero-copy > *:nth-child(4) { animation-delay: 0.35s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .profile-card {
+    animation: none;
+  }
+  .hero-copy > * {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+.profile-card .main-img,
+.profile-card .hover-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+.profile-card .hover-img {
+  opacity: 0;
+  z-index: 2;
+}
+
+.profile-card:hover .hover-img {
+  opacity: 1;
+}
+
+.profile-card:hover .main-img {
+  opacity: 0;
+}
+
+
+/* ==========================================================================
+   SCROLL TO TOP BUTTON
+   ========================================================================== */
+.scroll-top-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background-color: #0B3B32;
+  color: #fff;
+  font-size: 18px;
+  box-shadow: 0 4px 12px rgba(11, 59, 50, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  z-index: 1000;
+}
+
+.scroll-top-btn:hover {
+  background-color: #0F6E56;
+  transform: translateY(-3px);
+}
+
+.scroll-top-btn:active {
+  transform: translateY(0) scale(0.95);
+}
