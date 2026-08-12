@@ -1,6 +1,8 @@
 <template>
   <div class="container-fluid py-5 bg-light" id="contact">
     <div class="container">
+
+      <!-- TITLE -->
       <h1
         v-reveal
         class="text-center fw-bold mb-5 contact-main-title project-heading"
@@ -15,12 +17,14 @@
           class="col-12 col-md-6 d-flex align-items-center"
           v-reveal
         >
-          <div class="w-100 rounded-3 overflow-hidden shadow-sm border map-wrapper">
+          <div
+            class="w-100 rounded-3 overflow-hidden shadow-sm border map-wrapper"
+          >
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15438.399357551283!2d121.02043096020934!3d14.678636380529046!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397b6d654bda83f%3A0xc1529be294f9273a!2sRamer%20Village%2C%2010%20Ruby%20St%2C%20Tandang%20Sora%2C%20Quezon%20City%2C%201116%20Metro%20Manila!5e0!3m2!1sen!2sph!4v1779296578113!5m2!1sen!2sph"
               width="600"
               height="450"
-              style="border: 0;"
+              style="border: 0"
               allowfullscreen
               loading="lazy"
               referrerpolicy="no-referrer-when-downgrade"
@@ -30,7 +34,7 @@
 
         <!-- CONTACT FORM -->
         <div
-          class="col-12 col-md-6 d-flex flex-column justify-content-between"
+          class="col-12 col-md-6 d-flex flex-column"
           v-reveal="{ delay: 120 }"
         >
           <form
@@ -65,7 +69,7 @@
             </div>
 
             <!-- MESSAGE -->
-            <div class="mb-4 flex-grow-1">
+            <div class="mb-4">
               <textarea
                 v-model="form.message"
                 name="message"
@@ -77,18 +81,23 @@
               ></textarea>
             </div>
 
-            <!-- RECAPTCHA TOKEN -->
-            <input
-              type="hidden"
-              name="recaptcha_response"
-              :value="recaptchaToken"
-            />
+            <!-- RECAPTCHA -->
+            <div class="mb-4">
+
+              <div
+                ref="recaptchaContainer"
+                class="recaptcha-container"
+              ></div>
+
+            </div>
 
             <!-- SOCIAL MEDIA + SUBMIT -->
             <div
               id="socmed"
               class="d-flex justify-content-between align-items-center flex-wrap gap-3 mt-auto"
             >
+
+              <!-- SOCIAL MEDIA -->
               <div class="d-flex gap-3 social-icons fs-4">
 
                 <a
@@ -123,13 +132,7 @@
 
               </div>
 
-
-              <div class="d-flex justify-content-end mt-2">
-                        <div ref="recaptchaContainer">
-                          
-                        </div>
-              </div>
-
+              <!-- SUBMIT BUTTON -->
               <button
                 type="submit"
                 class="btn btn-primary custom-submit-btn px-4 py-2"
@@ -137,6 +140,7 @@
               >
                 {{ isLoading ? "Sending.." : "Submit" }}
               </button>
+
             </div>
 
           </form>
@@ -149,198 +153,464 @@
 
 
 <script setup>
-import { reactive, ref, onMounted } from "vue"
+
+import {
+  reactive,
+  ref,
+  onMounted,
+  onBeforeUnmount
+} from "vue"
+
 import { Notyf } from "notyf"
+
 import "notyf/notyf.min.css"
 
+
+/*
+|--------------------------------------------------------------------------
+| NOTYF
+|--------------------------------------------------------------------------
+*/
+
 const notyf = new Notyf()
+
+
+/*
+|--------------------------------------------------------------------------
+| WEB3FORMS
+|--------------------------------------------------------------------------
+*/
 
 const WEB3FORMS_ACCESS_KEY =
   "4e03c52a-7a1b-4a9f-ba5d-9bf432fcdf45"
 
+const subject =
+  "New message from Portfolio Contact Form"
+
+
+/*
+|--------------------------------------------------------------------------
+| GOOGLE reCAPTCHA V2 SITE KEY
+|--------------------------------------------------------------------------
+|
+| This is your public Site Key.
+|
+*/
+
 const RECAPTCHA_SITE_KEY =
   "6LeARYItAAAAANXnJszn5s_Skrdda0aT2OZXUz-F"
 
-const subject = "New message from Portfolio Contact Form"
+
+/*
+|--------------------------------------------------------------------------
+| FORM
+|--------------------------------------------------------------------------
+*/
 
 const form = reactive({
   fullName: "",
   email: "",
-  message: "",
+  message: ""
 })
 
+
+/*
+|--------------------------------------------------------------------------
+| STATE
+|--------------------------------------------------------------------------
+*/
+
 const isLoading = ref(false)
+
+const recaptchaContainer = ref(null)
+
+const recaptchaWidgetId = ref(null)
+
 const recaptchaToken = ref("")
 
 
 /*
- * Load Google reCAPTCHA
- */
-onMounted(() => {
-  if (document.querySelector("#recaptcha-script")) {
-    initializeRecaptcha()
+|--------------------------------------------------------------------------
+| reCAPTCHA SUCCESS
+|--------------------------------------------------------------------------
+*/
+
+function onRecaptchaSuccess(token) {
+
+  console.log("reCAPTCHA verified.")
+
+  recaptchaToken.value = token
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| reCAPTCHA EXPIRED
+|--------------------------------------------------------------------------
+*/
+
+function onRecaptchaExpired() {
+
+  console.log("reCAPTCHA expired.")
+
+  recaptchaToken.value = ""
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| reCAPTCHA ERROR
+|--------------------------------------------------------------------------
+*/
+
+function onRecaptchaError() {
+
+  console.error("reCAPTCHA error.")
+
+  recaptchaToken.value = ""
+
+  notyf.error(
+    "reCAPTCHA failed. Please try again."
+  )
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| RENDER reCAPTCHA
+|--------------------------------------------------------------------------
+*/
+
+function renderRecaptcha() {
+
+  if (!window.grecaptcha) {
+
+    console.error(
+      "Google reCAPTCHA is not loaded."
+    )
+
     return
+
   }
 
-  const script = document.createElement("script")
 
-  script.id = "recaptcha-script"
-  script.src =
-    `https://www.google.com/recaptcha/api.js?render=${RECAPTCHA_SITE_KEY}`
-  script.async = true
-  script.defer = true
+  if (!recaptchaContainer.value) {
 
-  script.onload = () => {
-    initializeRecaptcha()
+    console.error(
+      "reCAPTCHA container not found."
+    )
+
+    return
+
   }
 
-  document.head.appendChild(script)
+
+  if (recaptchaWidgetId.value !== null) {
+
+    return
+
+  }
+
+
+  try {
+
+    recaptchaWidgetId.value =
+      window.grecaptcha.render(
+        recaptchaContainer.value,
+        {
+          sitekey: RECAPTCHA_SITE_KEY,
+
+          size: "normal",
+
+          callback:
+            onRecaptchaSuccess,
+
+          "expired-callback":
+            onRecaptchaExpired,
+
+          "error-callback":
+            onRecaptchaError
+        }
+      )
+
+
+    console.log(
+      "reCAPTCHA rendered successfully."
+    )
+
+  } catch (error) {
+
+    console.error(
+      "reCAPTCHA render error:",
+      error
+    )
+
+  }
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| LOAD reCAPTCHA
+|--------------------------------------------------------------------------
+*/
+
+function loadRecaptcha() {
+
+  if (
+    window.grecaptcha &&
+    typeof window.grecaptcha.render === "function"
+  ) {
+
+    renderRecaptcha()
+
+    return
+
+  }
+
+
+  const checkRecaptcha =
+    setInterval(() => {
+
+      if (
+        window.grecaptcha &&
+        typeof window.grecaptcha.render ===
+          "function"
+      ) {
+
+        clearInterval(checkRecaptcha)
+
+        renderRecaptcha()
+
+      }
+
+    }, 100)
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| RESET reCAPTCHA
+|--------------------------------------------------------------------------
+*/
+
+function resetRecaptcha() {
+
+  if (
+    recaptchaWidgetId.value !== null &&
+    window.grecaptcha
+  ) {
+
+    window.grecaptcha.reset(
+      recaptchaWidgetId.value
+    )
+
+  }
+
+  recaptchaToken.value = ""
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| MOUNT
+|--------------------------------------------------------------------------
+*/
+
+onMounted(() => {
+
+  loadRecaptcha()
+
 })
 
 
 /*
- * Generate reCAPTCHA token
- */
-const initializeRecaptcha = () => {
-  if (typeof grecaptcha === "undefined") {
-    console.error("reCAPTCHA failed to load.")
-    return
-  }
+|--------------------------------------------------------------------------
+| UNMOUNT
+|--------------------------------------------------------------------------
+*/
 
-  grecaptcha.ready(async () => {
-    try {
-      recaptchaToken.value = await grecaptcha.execute(
-        RECAPTCHA_SITE_KEY,
-        {
-          action: "contact",
-        }
-      )
+onBeforeUnmount(() => {
 
-      console.log("reCAPTCHA token generated.")
-    } catch (error) {
-      console.error(
-        "Failed to generate reCAPTCHA token:",
-        error
-      )
-    }
-  })
-}
+  recaptchaToken.value = ""
+
+  recaptchaWidgetId.value = null
+
+})
 
 
 /*
- * Submit Contact Form
- */
+|--------------------------------------------------------------------------
+| SUBMIT
+|--------------------------------------------------------------------------
+*/
+
 const handleSubmit = async () => {
+
+  /*
+   * Check reCAPTCHA
+   */
+
+  if (!recaptchaToken.value) {
+
+    notyf.error(
+      "Please verify that you are not a robot."
+    )
+
+    return
+
+  }
+
+
   isLoading.value = true
+
 
   try {
 
     /*
-     * Generate a fresh reCAPTCHA token
-     * every time the form is submitted.
+     * Submit to Web3Forms
      */
-    if (typeof grecaptcha === "undefined") {
-      notyf.error("reCAPTCHA is not available. Please refresh the page.")
-      return
-    }
 
-    const token = await new Promise((resolve, reject) => {
+    const response =
+      await fetch(
+        "https://api.web3forms.com/submit",
+        {
+          method: "POST",
 
-      grecaptcha.ready(async () => {
-        try {
+          headers: {
+            "Content-Type":
+              "application/json",
 
-          const newToken = await grecaptcha.execute(
-            RECAPTCHA_SITE_KEY,
-            {
-              action: "contact",
-            }
-          )
+            Accept:
+              "application/json"
+          },
 
-          resolve(newToken)
+          body: JSON.stringify({
 
-        } catch (error) {
-          reject(error)
+            access_key:
+              WEB3FORMS_ACCESS_KEY,
+
+            subject:
+              subject,
+
+            name:
+              form.fullName,
+
+            email:
+              form.email,
+
+            message:
+              form.message,
+
+            /*
+             * reCAPTCHA response
+             */
+
+            "g-recaptcha-response":
+              recaptchaToken.value
+
+          })
+
         }
-      })
+      )
 
-    })
 
-    recaptchaToken.value = token
+    const result =
+      await response.json()
+
+
+    console.log(
+      "Web3Forms response:",
+      result
+    )
 
 
     /*
-     * Send form to Web3Forms
+     * SUCCESS
      */
-    const response = await fetch(
-      "https://api.web3forms.com/submit",
-      {
-        method: "POST",
-
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-
-        body: JSON.stringify({
-          access_key: WEB3FORMS_ACCESS_KEY,
-
-          subject: subject,
-
-          name: form.fullName,
-
-          email: form.email,
-
-          message: form.message,
-
-          /*
-           * IMPORTANT:
-           * Web3Forms expects the reCAPTCHA
-           * token using this property name.
-           */
-          recaptcha_response: recaptchaToken.value,
-        }),
-      }
-    )
-
-    const result = await response.json()
-
-    console.log("Web3Forms response:", result)
-
 
     if (result.success) {
 
-      notyf.success("Message sent!")
+      notyf.success(
+        "Message sent!"
+      )
+
 
       form.fullName = ""
+
       form.email = ""
+
       form.message = ""
 
-      /*
-       * Generate another token for the next submission.
-       */
-      recaptchaToken.value = ""
 
-      initializeRecaptcha()
+      resetRecaptcha()
 
-    } else {
-
-      console.error("Web3Forms error:", result)
-
-      notyf.error(
-        result.message || "Failed to send message."
-      )
     }
 
-  } catch (error) {
 
-    console.error("Contact form error:", error)
+    /*
+     * ERROR
+     */
 
-    notyf.error("Failed to send message.")
+    else {
 
-  } finally {
+      console.error(
+        "Web3Forms error:",
+        result
+      )
+
+
+      notyf.error(
+        result.message ||
+        "Failed to send message."
+      )
+
+
+      resetRecaptcha()
+
+    }
+
+  }
+
+
+  /*
+   * CATCH ERROR
+   */
+
+  catch (error) {
+
+    console.error(
+      "Contact form error:",
+      error
+    )
+
+
+    notyf.error(
+      "Failed to send message."
+    )
+
+
+    resetRecaptcha()
+
+  }
+
+
+  /*
+   * FINALLY
+   */
+
+  finally {
 
     isLoading.value = false
 
   }
+
 }
+
 </script>
